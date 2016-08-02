@@ -52,11 +52,11 @@ module LogjamAgent
       return @socket if @socket
       @socket = self.class.context.socket(ZMQ::DEALER)
       at_exit { reset }
-      @req_socket.setsockopt(ZMQ::LINGER, @config[:linger])
-      @req_socket.setsockopt(ZMQ::SNDHWM, @config[:snd_hwm])
-      @req_socket.setsockopt(ZMQ::RCVHWM, @config[:rcv_hwm])
-      @req_socket.setsockopt(ZMQ::RCVTIMEO, @config[:rcv_timeo])
-      @req_socket.setsockopt(ZMQ::SNDTIMEO, @config[:snd_timeo])
+      @socket.setsockopt(ZMQ::LINGER, @config[:linger])
+      @socket.setsockopt(ZMQ::SNDHWM, @config[:snd_hwm])
+      @socket.setsockopt(ZMQ::RCVHWM, @config[:rcv_hwm])
+      @socket.setsockopt(ZMQ::RCVTIMEO, @config[:rcv_timeo])
+      @socket.setsockopt(ZMQ::SNDTIMEO, @config[:snd_timeo])
       connection_specs.each do |spec|
         @socket.connect(spec)
       end
