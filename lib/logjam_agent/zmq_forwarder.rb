@@ -51,7 +51,7 @@ module LogjamAgent
     def socket
       return @socket if @socket
       @socket = self.class.context.socket(ZMQ::DEALER)
-      at_exit { reset_socket }
+      at_exit { reset }
       @req_socket.setsockopt(ZMQ::LINGER, @config[:linger])
       @req_socket.setsockopt(ZMQ::SNDHWM, @config[:snd_hwm])
       @req_socket.setsockopt(ZMQ::RCVHWM, @config[:rcv_hwm])
@@ -63,7 +63,7 @@ module LogjamAgent
       @socket
     end
 
-    def reset_socket
+    def reset
       if @socket
         @socket.close
         @socket = nil
@@ -109,12 +109,12 @@ module LogjamAgent
       answer_parts = []
       if socket.send_strings(request_parts) < 0
         log_warning "ZMQ error on sending: #{ZMQ::Util.error_string}"
-        reset_socket
+        reset
         return
       end
       if socket.recv_strings(answer_parts) < 0
         log_warning "ZMQ error on receiving: #{ZMQ::Util.error_string}"
-        reset_socket
+        reset
         return
       end
       if answer_parts.first != "" || !VALID_RESPONSE_CODES.include?(answer_parts.second.to_s.to_i)
